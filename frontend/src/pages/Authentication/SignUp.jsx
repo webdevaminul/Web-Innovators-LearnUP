@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { MdError, MdCheckCircle, MdOutlineEmail, MdOutlineLock } from "react-icons/md";
-import { FiUser } from "react-icons/fi";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
+import { FiUser } from "react-icons/fi";
 import Heading from "../../utils/Heading";
 import axiosPublic from "../../api/axiosPublic";
 import GoogleLogIn from "../../components/GoogleLogIn/GoogleLogIn";
@@ -13,6 +13,7 @@ export default function SignUp() {
   // State for form feedback and password visibility
   const [feedback, setFeedback] = useState({ error: null, success: null });
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordValue, setPasswordValue] = useState("");
 
   const {
     register,
@@ -47,6 +48,12 @@ export default function SignUp() {
     if (feedback.error || feedback.success) {
       setFeedback({ error: null, success: null });
     }
+  };
+
+  // Handle password field changes
+  const handlePasswordChange = (e) => {
+    setPasswordValue(e.target.value);
+    handleInputChange();
   };
 
   // Render input fields with validation
@@ -116,17 +123,19 @@ export default function SignUp() {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
                   message: "Must contain letters and numbers",
                 },
-                onChange: handleInputChange,
+                onChange: handlePasswordChange,
               })}
               aria-invalid={!!errors.userPassword}
               autoComplete="off"
             />
-            <span
-              onClick={() => setShowPassword(!showPassword)}
-              className="p-2 text-xl text-text/75 cursor-pointer"
-            >
-              {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
-            </span>
+            {passwordValue && (
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="p-2 text-xl text-text/75 cursor-pointer"
+              >
+                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+              </span>
+            )}
           </div>
           {errors.userPassword && (
             <p role="alert" className="text-red-500">
@@ -136,14 +145,18 @@ export default function SignUp() {
 
           {/* Feedback messages */}
           {feedback.error && (
-            <p className="text-white bg-red-600 rounded p-2 mt-4 flex  gap-2">
-              <MdError className="text-white text-xl mt-[2px]" />
+            <p className="text-white bg-red-600 rounded p-2 mt-4 flex flex-nowrap gap-2 overflow-auto">
+              <span className="w-5 h-5 aspect-square">
+                <MdError className="text-white text-xl w-full h-full" />
+              </span>
               {feedback.error}
             </p>
           )}
           {feedback.success && (
-            <p className="text-black bg-green-400 rounded p-2 mt-4 flex  gap-2">
-              <MdCheckCircle className="text-black text-xl mt-[2px]" />
+            <p className="text-black bg-green-400 rounded p-2 mt-4 flex flex-nowrap gap-2 overflow-auto">
+              <span className="w-5 h-5 aspect-square">
+                <MdCheckCircle className="text-black text-xl w-full h-full" />
+              </span>
               {feedback.success}
             </p>
           )}

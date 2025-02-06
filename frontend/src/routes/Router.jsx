@@ -1,7 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
-import Home from "../pages/Home/Home";
 import SignUp from "../pages/Authentication/SignUp";
+import EmailVerify from "../pages/Authentication/EmailVerify";
+import Home from "../pages/Home/Home";
 import SignIn from "../pages/Authentication/SignIn/SignIn";
 import AllCourses from "../pages/AllCourses/AllCourses";
 import BlogPosts from "../pages/BlogPosts/BlogPosts";
@@ -12,7 +13,6 @@ import TeacherHome from "../pages/TeacherDashboard/TeacherHome/TeacherHome";
 import TeacherProfile from "../pages/TeacherDashboard/TeacherProfile/TeacherProfile";
 import ManageCourse from "../pages/TeacherDashboard/Course/ManageCourse";
 import CreateCourse from "../pages/TeacherDashboard/Course/CreateCourse";
-import EmailVerify from "../pages/Authentication/EmailVerify/EmailVerify";
 import DashboardLayoutBasic from "../pages/UserDashboard/Dashboard/DashboardLayoutBasic";
 import ErrorBoundary from "../pages/UserDashboard/ErrorBoundary/ErrorBoundary";
 import CourseDetails from "../pages/CourseDetails/CourseDetails";
@@ -42,9 +42,9 @@ const router = createBrowserRouter([
     errorElement: <ErrorBoundary />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/sign-in", element: <SignIn /> },
       { path: "/sign-up", element: <SignUp /> },
       { path: "/email-verify", element: <EmailVerify /> },
+      { path: "/sign-in", element: <SignIn /> },
       {
         path: "/forget-password",
         element: <ForgetPassword />,
