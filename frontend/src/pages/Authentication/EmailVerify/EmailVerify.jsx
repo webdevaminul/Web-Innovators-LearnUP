@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdVerified, MdError } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 import { emailLoginSuccess, loginFailure, requestStart } from "../../../redux/authUsersSlice";
 import Heading from "../../../utils/Heading";
 
@@ -20,9 +20,9 @@ export default function EmailVerify() {
     const verifyEmail = async () => {
       try {
         dispatch(requestStart()); // Dispatch request start action before making API call
-        const res = await axiosInstance.get(`/auth/email-verify?token=${token}`);
+        const res = await axiosSecure.get(`/auth/email-verify?token=${token}`);
         dispatch(emailLoginSuccess(res.data)); // Dispatch login success action if login is successful
-        localStorage.setItem("accessToken", res.data.token); // Store the access token in localStorage
+        localStorage.setItem("learnupAccessToken", res.data.token); // Store the access token in localStorage
         console.log("Sign up API Response:", res.data);
 
         setTimeout(() => {

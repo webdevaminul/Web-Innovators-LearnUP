@@ -5,7 +5,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 import {
   emailLoginSuccess,
   loginFailure,
@@ -38,7 +38,7 @@ export default function SignIn() {
   const SignInMutation = useMutation({
     mutationFn: async (formData) => {
       dispatch(requestStart()); // Dispatch request start action before making API call
-      const res = await axiosInstance.post("/auth/signin", formData);
+      const res = await axiosSecure.post("/auth/signin", formData);
       return res.data;
     },
     onSuccess: (data) => {
@@ -47,7 +47,7 @@ export default function SignIn() {
         dispatch(loginFailure(data.message)); // Dispatch login failure action if login fails
       } else {
         dispatch(emailLoginSuccess(data)); // Dispatch login success action if login is successful
-        localStorage.setItem("accessToken", data.token); // Store the access token in localStorage
+        localStorage.setItem("learnupAccessToken", data.token); // Store the access token in localStorage
         navigate("/"); // Navigate to homepage
       }
     },
@@ -57,10 +57,7 @@ export default function SignIn() {
       console.log("data error", error.response?.data);
       console.log("message error", error.response?.data?.message);
       dispatch(
-        loginFailure(
-          error.response?.data?.message ||
-            "Something went wrong. Please try again"
-        )
+        loginFailure(error.response?.data?.message || "Something went wrong. Please try again")
       ); // Dispatch login failure action on error
     },
   });
@@ -140,8 +137,7 @@ export default function SignIn() {
                 },
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-                  message:
-                    "Password must contain at least one letter and one number",
+                  message: "Password must contain at least one letter and one number",
                 },
                 onChange: (event) => {
                   setPassValue(event.target.value);
@@ -175,10 +171,7 @@ export default function SignIn() {
             </p>
           )}
 
-          <Link
-            to="/forget-password"
-            className="mt-4 text-sm text-blue-500 hover:underline"
-          >
+          <Link to="/forget-password" className="mt-4 text-sm text-blue-500 hover:underline">
             Forget password?
           </Link>
 

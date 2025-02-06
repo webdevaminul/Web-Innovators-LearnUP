@@ -5,7 +5,7 @@ import { MdCheckCircle, MdError, MdPassword } from "react-icons/md";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { IoIosWarning } from "react-icons/io";
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../api/axiosInstance";
+import axiosSecure from "../../api/axiosSecure";
 import { useNavigate } from "react-router-dom";
 import {
   requestFailure,
@@ -18,9 +18,7 @@ import Title from "../../utils/Title";
 export default function DeleteAccount() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, loading, error, isGoogle } = useSelector(
-    (state) => state.authUsers
-  );
+  const { user, loading, error, isGoogle } = useSelector((state) => state.authUsers);
   const [oldPassValue, setOldPassValue] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -44,12 +42,9 @@ export default function DeleteAccount() {
   const deleteAccountMutation = useMutation({
     mutationFn: async (formData) => {
       dispatch(requestStart()); // Dispatch request start action before making API call
-      const res = await axiosInstance.delete(
-        `/user/delete-account/${user?.userInfo?._id}`,
-        {
-          data: formData,
-        }
-      );
+      const res = await axiosSecure.delete(`/user/delete-account/${user?.userInfo?._id}`, {
+        data: formData,
+      });
       return res.data;
     },
     onSuccess: (data) => {
@@ -58,17 +53,14 @@ export default function DeleteAccount() {
         dispatch(requestFailure(data.message)); // Dispatch request failure action if delete is fail
       } else {
         dispatch(userClearSuccess(data)); // Dispatch user clear success action if delete is successful
-        localStorage.removeItem("accessToken"); // Remove access token from localStorage
+        localStorage.removeItem("learnupAccessToken"); // Remove access token from localStorage
         navigate("/"); // Navigate to home
         alert("User Delete Successfully"); // Alert user delete success
       }
     },
     onError: (error) => {
       dispatch(
-        requestFailure(
-          error.response?.data?.message ||
-            "Some thing went wrong. Please try again"
-        )
+        requestFailure(error.response?.data?.message || "Some thing went wrong. Please try again")
       ); // Dispatch request failure action on error
     },
   });
@@ -120,8 +112,7 @@ export default function DeleteAccount() {
                   },
                   pattern: {
                     value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-                    message:
-                      "Password must contain at least one letter and one number",
+                    message: "Password must contain at least one letter and one number",
                   },
                   onChange: () => {
                     setOldPassValue(event.target.value);

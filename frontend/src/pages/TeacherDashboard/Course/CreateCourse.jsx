@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 
 const CreateCourse = () => {
   const [category, setCategory] = useState("");
@@ -48,7 +48,7 @@ const CreateCourse = () => {
     if (price > oldPrice) {
       toast.warning("Old price should be greater than or equal to the price.");
       setLoading(false);
-      return;  // Exit the function if the validation fails
+      return; // Exit the function if the validation fails
     }
 
     const formData = new FormData();
@@ -67,7 +67,7 @@ const CreateCourse = () => {
 
     // Loop through video inputs
     for (let i = 0; i < videoCount; i++) {
-      const videoFile = e.target[`video${i}`].files[0];  // Access video inputs dynamically
+      const videoFile = e.target[`video${i}`].files[0]; // Access video inputs dynamically
       if (videoFile) {
         formData.append("video", videoFile);
       }
@@ -84,22 +84,18 @@ const CreateCourse = () => {
         },
       };
 
-      const response = await axiosInstance.post(
-        "/course/create",
-        formData,
-        config
-      );
-      console.log('response', response)
+      const response = await axiosSecure.post("/course/create", formData, config);
+      console.log("response", response);
       if (response?.data?.courseId) {
         toast.success(response?.data?.message);
         setLoading(false);
         setProgress(100);
         setTimeout(() => setProgress(0), 500);
         setVideoCount(1);
-        setPreviewUrl("")
+        setPreviewUrl("");
         e.target.reset();
-      }else{
-        toast.error(response?.message)
+      } else {
+        toast.error(response?.message);
       }
     } catch (error) {
       console.log(error);
@@ -109,12 +105,9 @@ const CreateCourse = () => {
     }
   };
 
-
-
   return (
     <div className="mt-10 border-2 border-blue-400 rounded-lg">
       <form onSubmit={handleCreateCourse} className="p-8">
-
         {/* Progress bar */}
         {loading && (
           <>
@@ -127,7 +120,6 @@ const CreateCourse = () => {
             </div>
           </>
         )}
-
 
         <div className="my-3 flex justify-between">
           <h1 className="text-center text-4xl text-text font-bold">Create a new course</h1>
@@ -216,11 +208,7 @@ const CreateCourse = () => {
               {previewUrl === "" ? (
                 "image preview"
               ) : (
-                <img
-                  className="w-20 border rounded-sm"
-                  src={previewUrl}
-                  alt=""
-                />
+                <img className="w-20 border rounded-sm" src={previewUrl} alt="" />
               )}
             </div>
           </div>
@@ -228,9 +216,7 @@ const CreateCourse = () => {
 
         {/* Video For Courses */}
         <div className="morevideo">
-          <label className="block text-text font-medium">
-            Upload Videos
-          </label>
+          <label className="block text-text font-medium">Upload Videos</label>
 
           {/* Render video inputs based on videoCount */}
           {Array.from({ length: videoCount }).map((_, index) => (

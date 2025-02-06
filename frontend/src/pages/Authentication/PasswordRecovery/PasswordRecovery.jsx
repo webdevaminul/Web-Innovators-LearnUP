@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { MdCheckCircle, MdError, MdPassword } from "react-icons/md";
 import { useLocation } from "react-router-dom";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 
 export default function PasswordRecovery() {
   const [newPassValue, setNewPassValue] = useState("");
@@ -26,10 +26,7 @@ export default function PasswordRecovery() {
   const recoverPasswordMutation = useMutation({
     mutationFn: async (formData) => {
       setLoading(true);
-      const res = await axiosInstance.post(
-        `/auth/recover-password?token=${token}`,
-        formData
-      );
+      const res = await axiosSecure.post(`/auth/recover-password?token=${token}`, formData);
       return res.data;
     },
     onSuccess: (data) => {
@@ -38,10 +35,7 @@ export default function PasswordRecovery() {
       setLoading(false);
     },
     onError: (error) => {
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
+      setErrorMessage(error.response?.data?.message || "Something went wrong. Please try again.");
       setSuccessMessage("");
       setLoading(false);
     },
@@ -94,8 +88,7 @@ export default function PasswordRecovery() {
                 },
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-                  message:
-                    "Password must contain at least one letter and one number",
+                  message: "Password must contain at least one letter and one number",
                 },
                 onChange: () => {
                   setNewPassValue(event.target.value);

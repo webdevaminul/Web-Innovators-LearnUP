@@ -42,35 +42,40 @@ exports.signup = async (req, res, next) => {
         : "https://web-innovators-learnup.vercel.app";
     const verificationLink = `${baseUrl}/email-verify?token=${verificationToken}`;
 
-    // Create a transporter object
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.AUTH_EMAIL,
-        pass: process.env.AUTH_PASS,
-      },
-    });
+    try {
+      // Create a transporter object
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.AUTH_EMAIL,
+          pass: process.env.AUTH_PASS,
+        },
+      });
 
-    // Define the email content
-    const mailOptions = {
-      from: process.env.AUTH_EMAIL,
-      to: userEmail,
-      subject: "LearnUP Account Verification",
-      html: `
+      // Define the email content
+      const mailOptions = {
+        from: process.env.AUTH_EMAIL,
+        to: userEmail,
+        subject: "LearnUP Account Verification",
+        html: `
       <h1 style="font-size:26px;">Welcome to <span style="color:rgb(51, 51, 51)">Learn</span><span style="color:rgb(240, 138, 36)">UP</span></h1>
       <p style="font-size:18px;">To complete your registration, please verify your email by clicking the button below.</p>
       <p><a href="${verificationLink}" style="text-decoration:none;background-color:rgb(240, 138, 36); padding:8px; color:rgb(51, 51, 51); font-weight:500; font-size:20px">Verify & Sign in</a>.</p>
       
       `,
-    };
+      };
 
-    // Send the email
-    await transporter.sendMail(mailOptions);
+      // Send the email
+      await transporter.sendMail(mailOptions);
 
-    // Send a success response
-    return res
-      .status(200)
-      .json({ success: true, message: `Please check "${userEmail}" to verify your account.` });
+      // Send a success response
+      return res
+        .status(200)
+        .json({ success: true, message: `Please check "${userEmail}" to verify your account.` });
+    } catch (error) {
+      // Log an error message if there is an issue sending the email
+      console.error("Error sending verification email:", error);
+    }
   } catch (error) {
     // Pass any other errors to the error-handling middleware
     next(error);
@@ -115,7 +120,7 @@ exports.emailVerify = async (req, res, next) => {
     }
 
     // Generate a JWT access token for login the user
-    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
+    const learnupAccessToken = jwt.sign({ id: user._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
       expiresIn: "15m",
     });
 
@@ -141,7 +146,7 @@ exports.emailVerify = async (req, res, next) => {
     return res.status(201).json({
       success: true,
       message: "Email verification successful",
-      token: accessToken,
+      token: learnupAccessToken,
       userInfo,
     });
   } catch (error) {
@@ -185,9 +190,13 @@ exports.signin = async (req, res, next) => {
     }
 
     // Generate a JWT access token for login the user
-    const accessToken = jwt.sign({ id: validUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: "15m",
-    });
+    const learnupAccessToken = jwt.sign(
+      { id: validUser._id },
+      process.env.JWT_ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
 
     // Generate a JWT refresh token for login the user
     const refreshToken = jwt.sign(
@@ -210,7 +219,7 @@ exports.signin = async (req, res, next) => {
     // Send a success response
     return res
       .status(201)
-      .json({ success: true, message: "Login successful", token: accessToken, userInfo });
+      .json({ success: true, message: "Login successful", token: learnupAccessToken, userInfo });
   } catch (error) {
     // Pass any other errors to the error-handling middleware
     next(error);
@@ -376,9 +385,13 @@ exports.googleLogIn = async (req, res, next) => {
 
     if (validUser) {
       // Generate a JWT access token for login the user
-      const accessToken = jwt.sign({ id: validUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m",
-      });
+      const learnupAccessToken = jwt.sign(
+        { id: validUser._id },
+        process.env.JWT_ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
 
       // Generate a JWT refresh token for login the user
       const refreshToken = jwt.sign(
@@ -399,7 +412,7 @@ exports.googleLogIn = async (req, res, next) => {
       return res.status(201).json({
         success: true,
         message: "Google login successful",
-        token: accessToken,
+        token: learnupAccessToken,
         userInfo: validUser,
       });
     } else {
@@ -417,9 +430,13 @@ exports.googleLogIn = async (req, res, next) => {
       await userCollection.insertOne(newUser);
 
       // Generate a JWT access token for login the user
-      const accessToken = jwt.sign({ id: newUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
-        expiresIn: "15m",
-      });
+      const learnupAccessToken = jwt.sign(
+        { id: newUser._id },
+        process.env.JWT_ACCESS_TOKEN_SECRET,
+        {
+          expiresIn: "15m",
+        }
+      );
 
       // Generate a JWT refresh token for login the user
       const refreshToken = jwt.sign(
@@ -440,7 +457,7 @@ exports.googleLogIn = async (req, res, next) => {
       return res.status(201).json({
         success: true,
         message: "Google registration successful",
-        token: accessToken,
+        token: learnupAccessToken,
         userInfo: newUser,
       });
     }

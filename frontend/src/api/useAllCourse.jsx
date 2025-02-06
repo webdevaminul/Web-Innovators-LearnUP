@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "./axiosInstance";
+import axiosSecure from "./axiosSecure";
 
 const useAllCourse = ({ status } = { status: undefined }) => {
   const {
@@ -9,7 +9,7 @@ const useAllCourse = ({ status } = { status: undefined }) => {
   } = useQuery({
     queryKey: ["courses", status],
     queryFn: async () => {
-      const res = await axiosInstance.get("/all/courses", {
+      const res = await axiosSecure.get("/all/courses", {
         params: { status },
       });
       const data = res?.data?.data;

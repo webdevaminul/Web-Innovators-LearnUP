@@ -2,7 +2,7 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { FcGoogle } from "react-icons/fc";
 import { auth } from "../../../firebase.config";
 import { useMutation } from "@tanstack/react-query";
-import axiosInstance from "../../api/axiosInstance";
+import axiosSecure from "../../api/axiosSecure";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { requestStart, googleLoginSuccess, loginFailure } from "../../redux/authUsersSlice";
@@ -16,7 +16,7 @@ export default function GoogleLogIn() {
   const googleAuthMutation = useMutation({
     mutationFn: async (savedData) => {
       dispatch(requestStart()); // Dispatch request start action before making API call
-      const res = await axiosInstance.post("/auth/google", savedData);
+      const res = await axiosSecure.post("/auth/google", savedData);
       return res.data;
     },
     onSuccess: (data) => {
@@ -25,7 +25,7 @@ export default function GoogleLogIn() {
         dispatch(loginFailure()); // Dispatch login failure action if login is fail
       } else {
         dispatch(googleLoginSuccess(data)); // Dispatch google login success action if login is successful
-        localStorage.setItem("accessToken", data.token); // Store the access token in localStorage
+        localStorage.setItem("learnupAccessToken", data.token); // Store the access token in localStorage
         navigate("/"); // Navigate to homepage
       }
     },

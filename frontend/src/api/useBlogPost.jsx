@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "./axiosInstance";
+import axiosSecure from "./axiosSecure";
 
 const useBlogPost = () => {
   const {
@@ -9,7 +9,7 @@ const useBlogPost = () => {
   } = useQuery({
     queryKey: ["blog"],
     queryFn: async () => {
-      const res = await axiosInstance.get("/blog/allBlogPosts");
+      const res = await axiosSecure.get("/blog/allBlogPosts");
       return res?.data.data;
     },
   });
