@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
-import { toast } from "react-toastify"; 
-import axiosInstance from "../../api/axiosInstance";
+import { toast } from "react-toastify";
+import axiosSecure from "../../api/axiosSecure";
 import PropTypes from "prop-types";
 
 const UpdateBlogModal = ({ isOpen, onClose, blogData, onUpdate, refetch }) => {
@@ -33,22 +33,18 @@ const UpdateBlogModal = ({ isOpen, onClose, blogData, onUpdate, refetch }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.put(
-        `/blog/updateBlogPost/${blogData._id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axiosSecure.put(`/blog/updateBlogPost/${blogData._id}`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      console.log(response.data)
+      console.log(response.data);
       // Check if the response was successful
       if (response.status === 200) {
         const updatedPost = response.data;
         onUpdate(updatedPost);
-        toast.success("Blog post updated successfully!")
+        toast.success("Blog post updated successfully!");
         onClose();
         refetch();
       } else {
@@ -74,10 +70,7 @@ const UpdateBlogModal = ({ isOpen, onClose, blogData, onUpdate, refetch }) => {
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="title"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
               Title
             </label>
             <input
@@ -91,10 +84,7 @@ const UpdateBlogModal = ({ isOpen, onClose, blogData, onUpdate, refetch }) => {
             />
           </div>
           <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
               Description
             </label>
             <textarea

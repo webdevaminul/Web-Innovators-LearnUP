@@ -6,12 +6,8 @@ import { IoSearchOutline } from "react-icons/io5";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import Darkmode from "../Darkmode/Darkmode";
-import {
-  requestFailure,
-  requestStart,
-  userClearSuccess,
-} from "../../redux/authUsersSlice";
-import axiosInstance from "../../api/axiosInstance";
+import { requestFailure, requestStart, userClearSuccess } from "../../redux/authUsersSlice";
+import axiosSecure from "../../api/axiosSecure";
 import useAllUser from "../../api/useAllUser";
 import logo from "../../assets/logo.png";
 import Loader from "../../utils/Loader";
@@ -31,7 +27,7 @@ const Navbar = () => {
 
   // const role = "Admin";
   // const role = "Teacher";
-  const role = user?.userInfo?.userRole  ;
+  const role = user?.userInfo?.userRole;
 
   // Toggle Profile Menu
   const toggleProfileMenu = () => {
@@ -42,10 +38,7 @@ const Navbar = () => {
   // Handle Click Outside Mobile Menu
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(e.target)
-      ) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
         setProfileMenu(false);
       }
     };
@@ -58,19 +51,16 @@ const Navbar = () => {
   const handleSignOut = async () => {
     try {
       dispatch(requestStart());
-      const res = await axiosInstance.get("/auth/sign-out");
+      const res = await axiosSecure.get("/auth/sign-out");
       if (res.data.success) {
         dispatch(userClearSuccess());
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("learnupAccessToken");
         setProfileMenu(false);
         navigate("/");
       }
     } catch (error) {
       dispatch(
-        requestFailure(
-          error.response?.data?.message ||
-            "Something went wrong. Please try again."
-        )
+        requestFailure(error.response?.data?.message || "Something went wrong. Please try again.")
       );
     }
   };
@@ -208,9 +198,7 @@ const Navbar = () => {
                 {profileMenu && (
                   <div className="absolute top-[3.2rem] sm:right-0 right-[-4.5rem] z-40 bg-backgroundShadeOne p-4 shadow-sm border border-borderDark rounded-xl flex flex-col gap-4">
                     <div className="">
-                      <p className="whitespace-nowrap">
-                        Hi, {user?.userInfo?.userName}
-                      </p>
+                      <p className="whitespace-nowrap">Hi, {user?.userInfo?.userName}</p>
                       <p className="text-xs ">{user?.userInfo?.userEmail}</p>
                     </div>
 
@@ -220,9 +208,7 @@ const Navbar = () => {
                         to="dashboard/home"
                         className="text-nowrap text-textWhite text-sm bg-backgroundBlue hover:bg-backgroundBlueHover border border-borderLight whitespace-nowrap w-full rounded-xl p-2 flex items-center  gap-2"
                       >
-                        <span className="text-2xl">
-                          {/* <BiCreditCardFront /> */}
-                        </span>
+                        <span className="text-2xl">{/* <BiCreditCardFront /> */}</span>
                         <span>Dashboard</span>
                       </Link>
                     ) : (
@@ -233,9 +219,7 @@ const Navbar = () => {
                             to="/teacher-dashboard"
                             className="text-nowrap text-textWhite text-sm bg-backgroundBlue hover:bg-backgroundBlueHover border border-borderLight whitespace-nowrap w-full rounded-xl p-2 flex items-center  gap-2"
                           >
-                            <span className="text-2xl">
-                              {/* <BiCreditCardFront /> */}
-                            </span>
+                            <span className="text-2xl">{/* <BiCreditCardFront /> */}</span>
                             <span>Dashboard</span>
                           </Link>
                         ) : (
@@ -244,9 +228,7 @@ const Navbar = () => {
                             to="/admin-dashboard"
                             className="text-nowrap text-textWhite text-sm bg-backgroundBlue hover:bg-backgroundBlueHover border border-borderLight whitespace-nowrap w-full rounded-xl p-2 flex items-center  gap-2"
                           >
-                            <span className="text-2xl">
-                              {/* <BiCreditCardFront /> */}
-                            </span>
+                            <span className="text-2xl">{/* <BiCreditCardFront /> */}</span>
                             <span>Dashboard</span>
                           </Link>
                         )}
@@ -265,9 +247,7 @@ const Navbar = () => {
                       onClick={handleSignOut}
                       className="text-sm bg-red-500 hover:bg-red-600 text-textWhite border border-border whitespace-nowrap w-full rounded-xl p-2 flex items-center  gap-2"
                     >
-                      <span className="text-2xl">
-                        {/* <IoExitOutline /> */}
-                      </span>
+                      <span className="text-2xl">{/* <IoExitOutline /> */}</span>
                       <span>Sign out</span>
                     </button>
                   </div>

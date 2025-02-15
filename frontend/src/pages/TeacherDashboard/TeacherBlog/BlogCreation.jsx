@@ -2,26 +2,20 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 
 const BlogCreation = () => {
   const { user } = useSelector((state) => state.authUsers);
   const [category, setCategory] = useState("General");
   const [previewUrl, setPreviewUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   const name = user?.userInfo?.userName;
   const email = user?.userInfo?.userEmail;
   const userPhoto = user?.userInfo?.userPhoto;
   const status = "pending";
 
-  const categories = [
-    "General",
-    "Technology",
-    "Health",
-    "Education",
-    "Entertainment",
-  ];
+  const categories = ["General", "Technology", "Health", "Education", "Entertainment"];
 
   //  Here image preview
   const handleImageChange = (event) => {
@@ -56,7 +50,7 @@ const BlogCreation = () => {
 
     try {
       // Sending POST request with Axios
-      axiosInstance
+      axiosSecure
         .post("/blog/createBlog", formData, {
           headers: {
             "Content-Type": "multipart/form-data", // Important for file upload
@@ -83,15 +77,10 @@ const BlogCreation = () => {
   return (
     <div className="flex items-center justify-center min-h-screen p-4">
       <div className="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Create New Blog Post
-        </h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Create New Blog Post</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor="title"
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="title">
               Title
             </label>
             <input
@@ -103,10 +92,7 @@ const BlogCreation = () => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor="description"
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="description">
               Description
             </label>
             <textarea
@@ -118,10 +104,7 @@ const BlogCreation = () => {
             />
           </div>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor="category"
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="category">
               Category
             </label>
             <select
@@ -155,20 +138,13 @@ const BlogCreation = () => {
                 {previewUrl === "" ? (
                   "image preview"
                 ) : (
-                  <img
-                    className="w-20 border rounded-sm"
-                    src={previewUrl}
-                    alt=""
-                  />
+                  <img className="w-20 border rounded-sm" src={previewUrl} alt="" />
                 )}
               </div>
             </div>
           </div>
           <div className="mb-4">
-            <label
-              className="block text-gray-700 text-sm font-semibold mb-2"
-              htmlFor="time"
-            >
+            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="time">
               Time
             </label>
             <input

@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Loader from "../../../utils/Loader";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 import useAllUser from "../../../api/useAllUser";
 import useAllTeacher from "../../../api/useAllTeacher";
 
 const UserManage = () => {
   const { users } = useAllUser();
-  const allStudents = users.filter(std => std.userRole === "student");
+  const allStudents = users.filter((std) => std.userRole === "student");
   // console.table(users);
   const [activeTab, setActiveTab] = useState(1);
   const [status, setStatus] = useState("Pending");
@@ -19,10 +19,7 @@ const UserManage = () => {
     const updateData = { status, userNewRole };
 
     try {
-      const res = await axiosInstance.put(
-        `/approved/teacher/${id}`,
-        updateData
-      );
+      const res = await axiosSecure.put(`/approved/teacher/${id}`, updateData);
 
       // Check if the response is acknowledged
       if (res?.data?.result?.acknowledged) {
@@ -53,9 +50,9 @@ const UserManage = () => {
   if (isLoading) {
     return <Loader />;
   }
-if(!teachers.length) {
-  return <p className="flex h-screen justify-center items-center"> No User Yet </p>
-}
+  if (!teachers.length) {
+    return <p className="flex h-screen justify-center items-center"> No User Yet </p>;
+  }
   return (
     <>
       <div className="p-8 mb-4 flex items-center gap-5 justify-start ">
@@ -128,32 +125,23 @@ if(!teachers.length) {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="flex items-center">
                     <span className="flex-shrink-0 h-10 w-10">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={user.userPhoto}
-                      />
+                      <img className="h-10 w-10 rounded-full" src={user.userPhoto} />
                     </span>
                     <span className="ml-4">
                       <span className="text-sm flex flex-col font-medium text-text">
                         {user.userName}
                       </span>
-                      <span className="text-sm text-text">
-                        {user.userEmail}
-                      </span>
+                      <span className="text-sm text-text">{user.userEmail}</span>
                     </span>
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-text">
-                  {user.userEmail}
-                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-text">{user.userEmail}</td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                     Learning process
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-text">
-                  {user.userRole}
-                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-text">{user.userRole}</td>
               </tr>
             ))}
           </tbody>
@@ -200,18 +188,13 @@ if(!teachers.length) {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className="flex items-center">
                     <span className="flex-shrink-0 h-10 w-10">
-                      <img
-                        className="h-10 w-10 rounded-full"
-                        src={teacher.userPhoto}
-                      />
+                      <img className="h-10 w-10 rounded-full" src={teacher.userPhoto} />
                     </span>
                     <span className="ml-4">
                       <span className="text-sm flex flex-col font-medium text-gray-900">
                         {teacher.userName}
                       </span>
-                      <span className="text-sm text-text">
-                        {teacher.userEmail}
-                      </span>
+                      <span className="text-sm text-text">{teacher.userEmail}</span>
                     </span>
                   </span>
                 </td>
@@ -256,7 +239,6 @@ if(!teachers.length) {
           </tbody>
         </table>
       )}
-      <ToastContainer />
     </>
   );
 };

@@ -1,15 +1,10 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import {
-  MdCheckCircle,
-  MdError,
-  MdOutlineLock,
-  MdPassword,
-} from "react-icons/md";
+import { MdCheckCircle, MdError, MdOutlineLock, MdPassword } from "react-icons/md";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from "../../api/axiosInstance";
+import axiosSecure from "../../api/axiosSecure";
 import {
   profileUpdateSuccess,
   requestFailure,
@@ -42,10 +37,7 @@ export default function ChangePassword() {
   const changePasswordMutation = useMutation({
     mutationFn: async (formData) => {
       dispatch(requestStart()); // Dispatch request start action before making API call
-      const res = await axiosInstance.post(
-        `/user/change-password/${user?.userInfo?._id}`,
-        formData
-      );
+      const res = await axiosSecure.post(`/user/change-password/${user?.userInfo?._id}`, formData);
       return res.data;
     },
     onSuccess: (data) => {
@@ -59,10 +51,7 @@ export default function ChangePassword() {
     },
     onError: (error) => {
       dispatch(
-        requestFailure(
-          error.response?.data?.message ||
-            "Some thing went wrong. Please try again"
-        )
+        requestFailure(error.response?.data?.message || "Some thing went wrong. Please try again")
       ); // Dispatch request failure action on error
     },
   });
@@ -110,8 +99,7 @@ export default function ChangePassword() {
                 },
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-                  message:
-                    "Password must contain at least one letter and one number",
+                  message: "Password must contain at least one letter and one number",
                 },
                 onChange: () => {
                   setOldPassValue(event.target.value);
@@ -165,8 +153,7 @@ export default function ChangePassword() {
                 },
                 pattern: {
                   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
-                  message:
-                    "Password must contain at least one letter and one number",
+                  message: "Password must contain at least one letter and one number",
                 },
                 onChange: () => {
                   setNewPassValue(event.target.value);

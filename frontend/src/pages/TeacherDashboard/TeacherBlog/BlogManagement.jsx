@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import Loader from "../../../utils/Loader";
 import useBlogPost from "../../../api/useBlogPost";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 import UpdateBlogModal from "../../../components/UpdateBlogModal/UpdateBlogModal";
 
 const BlogPostTable = () => {
@@ -28,7 +28,7 @@ const BlogPostTable = () => {
 
       // If user confirms, proceed with deletion
       if (result.isConfirmed) {
-        const res = await axiosInstance.delete(`/blog/deleteBlogPost/${id}`);
+        const res = await axiosSecure.delete(`/blog/deleteBlogPost/${id}`);
 
         // Handle success response from the backend
         if (res.status === 200) {
@@ -57,14 +57,13 @@ const BlogPostTable = () => {
     setIsModalOpen(true);
   };
 
-
   const handleUpdate = () => {
     refetch();
   };
 
   if (isLoading) return <Loader />;
-  if (!blogs?.length) return <p className="flex justify-center items-center h-screen">No Data available</p>;
-
+  if (!blogs?.length)
+    return <p className="flex justify-center items-center h-screen">No Data available</p>;
 
   return (
     <div className="overflow-x-auto h-screen">
@@ -81,11 +80,7 @@ const BlogPostTable = () => {
           {blogs?.map((post) => (
             <tr key={post._id}>
               <td className="border border-gray-300 px-4 py-2">
-                <img
-                  src={post?.image}
-                  alt={post.title}
-                  className="w-16 h-16 object-cover"
-                />
+                <img src={post?.image} alt={post.title} className="w-16 h-16 object-cover" />
               </td>
               <td className="border border-gray-300 px-4 py-2">{post.title}</td>
               <td className="border border-gray-300 px-4 py-2">

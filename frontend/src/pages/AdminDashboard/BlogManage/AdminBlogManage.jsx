@@ -1,9 +1,9 @@
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineDelete, AiOutlineCheck } from "react-icons/ai";
 import useBlogPost from "../../../api/useBlogPost";
-import axiosInstance from "../../../api/axiosInstance";
+import axiosSecure from "../../../api/axiosSecure";
 import Loader from "../../../utils/Loader";
 
 const AdminBlogManage = () => {
@@ -25,7 +25,7 @@ const AdminBlogManage = () => {
 
       // If user confirms, proceed with deletion
       if (result.isConfirmed) {
-        const res = await axiosInstance.delete(`/blog/deleteBlogPost/${id}`);
+        const res = await axiosSecure.delete(`/blog/deleteBlogPost/${id}`);
 
         // Handle success response from the backend
         if (res.status === 200) {
@@ -51,7 +51,7 @@ const AdminBlogManage = () => {
 
   const handleApproval = async (id) => {
     try {
-      const res = await axiosInstance.put(`/blog/updateStatus/${id}`, {
+      const res = await axiosSecure.put(`/blog/updateStatus/${id}`, {
         status,
       });
 
@@ -81,27 +81,17 @@ const AdminBlogManage = () => {
           <tr>
             <th className="border border-border text-text px-4 py-2">Image</th>
             <th className="border border-border text-text px-4 py-2">Title</th>
-            <th className="border border-border text-text px-4 py-2">
-              Date & Time
-            </th>
+            <th className="border border-border text-text px-4 py-2">Date & Time</th>
             <th className="border border-border text-text px-4 py-2">Status</th>
-            <th className="border border-border text-text px-4 py-2">
-              Actions
-            </th>
-            <th className="border border-border text-text px-4 py-2">
-              Approval
-            </th>
+            <th className="border border-border text-text px-4 py-2">Actions</th>
+            <th className="border border-border text-text px-4 py-2">Approval</th>
           </tr>
         </thead>
         <tbody>
           {blogs?.map((post) => (
             <tr key={post._id}>
               <td className="border border-border px-4 py-2">
-                <img
-                  className="w-16 h-16 object-cover"
-                  src={post?.image}
-                  alt={post.title}
-                />
+                <img className="w-16 h-16 object-cover" src={post?.image} alt={post.title} />
               </td>
               <td className="border border-border px-4 py-2"> {post.title} </td>
               <td className="border border-border px-4 py-2">
@@ -133,7 +123,6 @@ const AdminBlogManage = () => {
             </tr>
           ))}
         </tbody>
-        <ToastContainer />
       </table>
     </div>
   );

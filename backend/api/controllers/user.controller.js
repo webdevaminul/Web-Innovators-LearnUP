@@ -118,7 +118,7 @@ exports.deleteAccount = async (req, res, next) => {
       const deleteResult = await userCollection.deleteOne({ _id: new ObjectId(req.params.id) });
 
       // Clear cookies
-      res.clearCookie("refreshToken");
+      res.clearCookie("learnupRefreshToken");
 
       // Send a success response
       return res.status(200).json({
@@ -146,7 +146,7 @@ exports.deleteAccount = async (req, res, next) => {
       const deleteResult = await userCollection.deleteOne({ _id: new ObjectId(req.params.id) });
 
       // Clear cookies
-      res.clearCookie("refreshToken");
+      res.clearCookie("learnupRefreshToken");
 
       // Send a success response
       return res.status(200).json({

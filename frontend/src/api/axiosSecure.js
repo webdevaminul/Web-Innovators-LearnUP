@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Create an instance of axios with base configuration
-const axiosInstance = axios.create({
+const axiosSecure = axios.create({
   baseURL:
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000" // Development URL
@@ -10,10 +10,10 @@ const axiosInstance = axios.create({
 });
 
 // Request interceptor to add token to request headers
-axiosInstance.interceptors.request.use(
+axiosSecure.interceptors.request.use(
   (config) => {
     // Get the access token from local storage
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("learnupAccessToken");
     if (token) {
       // Add access token to Authorization header
       config.headers["Authorization"] = `Bearer ${token}`;
@@ -26,7 +26,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // Response interceptor to handle token expiration and refresh token
-axiosInstance.interceptors.response.use(
+axiosSecure.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
@@ -37,19 +37,19 @@ axiosInstance.interceptors.response.use(
 
       try {
         // Make a request to refresh the access token using the refresh token from the cookie
-        const res = await axiosInstance.get("/auth/refresh-token");
+        const res = await axiosSecure.get("/auth/refresh-token");
 
         // Get the new access token from the response
         const newToken = res.data?.token;
 
         // Store the new access token in localStorage
-        localStorage.setItem("accessToken", newToken);
+        localStorage.setItem("learnupAccessToken", newToken);
 
         // Retry the original request with the new token
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
 
         // Retry the original request with new token
-        return axiosInstance(originalRequest);
+        return axiosSecure(originalRequest);
       } catch (err) {
         console.error("Failed to refresh access token:", err);
         return Promise.reject(err);
@@ -60,4 +60,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosSecure;

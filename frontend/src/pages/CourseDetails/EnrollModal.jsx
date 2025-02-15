@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import axiosInstance from "../../api/axiosInstance";
+import axiosSecure from "../../api/axiosSecure";
 
 const EnrollModal = ({ toggleModal, courseId, courseTitle }) => {
   const { user } = useSelector((state) => state.authUsers);
@@ -23,7 +23,7 @@ const EnrollModal = ({ toggleModal, courseId, courseTitle }) => {
     console.log(email, studentId);
     try {
       // Sending POST request with Axios
-      axiosInstance
+      axiosSecure
         .post("/enroll", data, {})
         .then((res) => {
           const url = res.data?.url;

@@ -1,17 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import axiosInstance from "./axiosInstance";
+import axiosSecure from "./axiosSecure";
 
-const useAvailableCourse = (
-  sortOrder,
-  page = 1,
-  limit = 6,
-  selectedCategory = null
-) => {
-  const { data = { data: [], totalPages: 0 }, isLoading ,refetch} = useQuery({
+const useAvailableCourse = (sortOrder, page = 1, limit = 6, selectedCategory = null) => {
+  const {
+    data = { data: [], totalPages: 0 },
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["course", sortOrder, page, limit, selectedCategory],
     queryFn: async () => {
       // Pass sortOrder as a query parameter
-      const res = await axiosInstance.get("/courses/available", {
+      const res = await axiosSecure.get("/courses/available", {
         params: {
           sortOrder,
           page,
@@ -25,7 +24,7 @@ const useAvailableCourse = (
     },
   });
   const { data: courses, totalPages } = data;
-  return { courses, isLoading, totalPages,refetch };
+  return { courses, isLoading, totalPages, refetch };
 };
 
 export default useAvailableCourse;
