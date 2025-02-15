@@ -1,9 +1,9 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineEmail, MdOutlineLock } from "react-icons/md";
-import { FiUser } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
 import Heading from "../../utils/Heading";
 import TitleLeft from "../../components/Titles/TitleLeft";
 import InputField from "../../components/Form/InputField";
@@ -11,6 +11,12 @@ import SubmitButton from "../../components/Form/SubmitButton";
 import FeedbackMessage from "../../components/Form/FeedbackMessage";
 import GoogleLogIn from "../../components/GoogleLogIn/GoogleLogIn";
 import axiosPublic from "../../api/axiosPublic";
+import {
+  emailLoginSuccess,
+  loginFailure,
+  requestStart,
+  resetError,
+} from "../../redux/authUsersSlice";
 
 const VALIDATION_MESSAGES = {
   USERNAME_REQUIRED: "User name is required",
@@ -23,8 +29,10 @@ const VALIDATION_MESSAGES = {
   PASSWORD_PATTERN: "Must contain letters and numbers",
 };
 
-export default function SignUp() {
-  const [feedback, setFeedback] = useState({ error: null, success: null });
+export default function SignIn() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.authUsers);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
 
@@ -35,40 +43,39 @@ export default function SignUp() {
     reset,
   } = useForm();
 
-  const signUpMutation = useMutation({
+  const signInMutation = useMutation({
     mutationFn: async (formData) => {
-      const { data } = await axiosPublic.post("/auth/signup", formData);
+      dispatch(requestStart());
+      const { data } = await axiosPublic.post("/auth/signin", formData);
       return data;
     },
-    onSuccess: ({ success, message }) => {
-      setFeedback({ error: success ? null : message, success: success ? message : null });
-      if (success) {
+    onSuccess: (data) => {
+      if (data.success) {
+        dispatch(emailLoginSuccess(data));
+        localStorage.setItem("learnupAccessToken", data.token);
+        navigate("/");
         reset();
-        setShowPassword(false);
-        setPasswordValue("");
+      } else {
+        dispatch(loginFailure(data.message));
       }
     },
-    onError: ({ response }) => {
-      setFeedback({
-        error: response?.data?.message || "Something went wrong. Please try again",
-        success: null,
-      });
+    onError: (err) => {
+      dispatch(
+        loginFailure(err.response?.data?.message || "Something went wrong. Please try again")
+      );
     },
   });
 
   const handleFormSubmit = useCallback(
     (formData) => {
-      setFeedback({ error: null, success: null });
-      signUpMutation.mutate(formData);
+      signInMutation.mutate(formData);
     },
-    [signUpMutation]
+    [signInMutation]
   );
 
   const handleInputChange = useCallback(() => {
-    if (feedback.success || feedback.error) {
-      setFeedback({ error: null, success: null });
-    }
-  }, [feedback]);
+    dispatch(resetError(null));
+  }, [dispatch]);
 
   const handlePasswordChange = useCallback(
     (e) => {
@@ -78,30 +85,20 @@ export default function SignUp() {
     [handleInputChange]
   );
 
+  useEffect(() => {
+    dispatch(resetError());
+  }, [dispatch]);
+
   return (
     <main className="max-w-xs mx-auto flex items-center justify-center">
-      <Heading heading="Sign Up" />
+      <Heading heading="Sign In" />
       <section className="my-10 w-full">
-        <TitleLeft title={"Sign up"} subTitle={"Fill in the form to create your account"} />
+        <TitleLeft title={"Sign in"} subTitle={"Fill in the form to access your account"} />
 
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="flex flex-col gap-5 md:gap-6 my-5 md:my-6"
         >
-          <InputField
-            icon={<FiUser />}
-            type={"text"}
-            placeholder={"Full name*"}
-            name={"userName"}
-            register={register}
-            validationRules={{
-              required: VALIDATION_MESSAGES.USERNAME_REQUIRED,
-              maxLength: { value: 24, message: VALIDATION_MESSAGES.USERNAME_MAX_LENGTH },
-            }}
-            errors={errors}
-            onInputChange={handleInputChange}
-          />
-
           <InputField
             icon={<MdOutlineEmail />}
             type={"email"}
@@ -117,12 +114,13 @@ export default function SignUp() {
             }}
             errors={errors}
             onInputChange={handleInputChange}
+            isAutoComplete="on"
           />
 
           <InputField
             icon={<MdOutlineLock />}
             type={"password"}
-            placeholder={"Create password*"}
+            placeholder={"Password*"}
             name={"userPassword"}
             register={register}
             validationRules={{
@@ -141,22 +139,21 @@ export default function SignUp() {
             onInputChange={handlePasswordChange}
           />
 
-          {feedback.success && <FeedbackMessage message={feedback.success} type={"success"} />}
-          {feedback.error && <FeedbackMessage message={feedback.error} type={"error"} />}
+          {error && <FeedbackMessage message={error} type={"error"} />}
 
-          <SubmitButton
-            isLoading={signUpMutation.isPending}
-            loadingLabel={"Signing up..."}
-            label={"Sign up"}
-          />
+          <Link to="/forget-password" className="text-sm text-blue-500 hover:underline">
+            Forget password?
+          </Link>
+
+          <SubmitButton isLoading={loading} loadingLabel={"Signing in..."} label={"Sign in"} />
         </form>
 
         <GoogleLogIn />
 
         <p className="text-sm text-center">
-          Already have an account?
-          <Link to="/sign-in" className="text-blue-500 hover:underline ml-1">
-            Sign in here
+          <span>Don&apos;t have an acoount?</span>
+          <Link to="/sign-up" className="text-blue-500 hover:underline ml-1">
+            Sign up here
           </Link>
         </p>
       </section>

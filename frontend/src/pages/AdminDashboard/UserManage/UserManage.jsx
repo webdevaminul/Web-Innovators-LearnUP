@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Loader from "../../../utils/Loader";
 import axiosSecure from "../../../api/axiosSecure";
 import useAllUser from "../../../api/useAllUser";
@@ -239,7 +239,6 @@ const UserManage = () => {
           </tbody>
         </table>
       )}
-      <ToastContainer />
     </>
   );
 };

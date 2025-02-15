@@ -1,9 +1,12 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "../App";
+import Home from "../pages/Home/Home";
+import UserProtected from "./UserProtected";
 import SignUp from "../pages/Authentication/SignUp";
 import EmailVerify from "../pages/Authentication/EmailVerify";
-import Home from "../pages/Home/Home";
-import SignIn from "../pages/Authentication/SignIn/SignIn";
+import SignIn from "../pages/Authentication/SignIn";
+import ForgetPassword from "../pages/Authentication/ForgetPassword";
+import PasswordRecovery from "../pages/Authentication/PasswordRecovery";
 import AllCourses from "../pages/AllCourses/AllCourses";
 import BlogPosts from "../pages/BlogPosts/BlogPosts";
 import ContactPage from "../pages/ContactPage/ContactPage";
@@ -28,8 +31,6 @@ import DeleteAccount from "../pages/AccountManagement/DeleteAccount";
 import BlogCreation from "../pages/TeacherDashboard/TeacherBlog/BlogCreation";
 import BlogManagement from "../pages/TeacherDashboard/TeacherBlog/BlogManagement";
 
-import ForgetPassword from "../pages/Authentication/ForgetPassword/ForgetPassword";
-import PasswordRecovery from "../pages/Authentication/PasswordRecovery/PasswordRecovery";
 import BlogDetails from "../components/BlogDetails/BlogDetails";
 import AdminBlogManage from "../pages/AdminDashboard/BlogManage/AdminBlogManage";
 import UserManage from "../pages/AdminDashboard/UserManage/UserManage";
@@ -42,16 +43,45 @@ const router = createBrowserRouter([
     errorElement: <ErrorBoundary />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/sign-up", element: <SignUp /> },
-      { path: "/email-verify", element: <EmailVerify /> },
-      { path: "/sign-in", element: <SignIn /> },
+      {
+        path: "/sign-up",
+        element: (
+          <UserProtected>
+            <SignUp />
+          </UserProtected>
+        ),
+      },
+      {
+        path: "/email-verify",
+        element: (
+          <UserProtected>
+            <EmailVerify />
+          </UserProtected>
+        ),
+      },
+      {
+        path: "/sign-in",
+        element: (
+          <UserProtected>
+            <SignIn />
+          </UserProtected>
+        ),
+      },
       {
         path: "/forget-password",
-        element: <ForgetPassword />,
+        element: (
+          <UserProtected>
+            <ForgetPassword />
+          </UserProtected>
+        ),
       },
       {
         path: "/password-recovery",
-        element: <PasswordRecovery />,
+        element: (
+          <UserProtected>
+            <PasswordRecovery />
+          </UserProtected>
+        ),
       },
       {
         path: "/manage-account",

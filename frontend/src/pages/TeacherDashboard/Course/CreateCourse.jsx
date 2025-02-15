@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axiosSecure from "../../../api/axiosSecure";
 
 const CreateCourse = () => {
@@ -270,7 +270,6 @@ const CreateCourse = () => {
           </button>
         </div>
       </form>
-      <ToastContainer />
     </div>
   );
 };

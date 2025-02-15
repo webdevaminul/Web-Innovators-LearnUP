@@ -25,7 +25,8 @@ const UpdateCourse = ({ courseData, isModalOpen, setIsModalOpen, onClose }) => {
 
       setLoading(true);
       await axiosSecure.put(`/course/update/${courseData._id}`, formData);
-      toast.success("Course updated successfully!");
+      // toast.success("Course updated successfully!");
+      showToast("Course updated successfully!");
       setLoading(false);
       onClose(); // Close modal and refresh
     } catch (error) {

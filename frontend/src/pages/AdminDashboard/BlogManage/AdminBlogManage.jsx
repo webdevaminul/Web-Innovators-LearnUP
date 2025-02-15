@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { AiOutlineEye, AiOutlineDelete, AiOutlineCheck } from "react-icons/ai";
 import useBlogPost from "../../../api/useBlogPost";
 import axiosSecure from "../../../api/axiosSecure";
@@ -123,7 +123,6 @@ const AdminBlogManage = () => {
             </tr>
           ))}
         </tbody>
-        <ToastContainer />
       </table>
     </div>
   );

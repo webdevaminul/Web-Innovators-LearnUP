@@ -1,5 +1,5 @@
 import { MdBlock } from "react-icons/md";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { FaCheckCircle } from "react-icons/fa";
 import useAllCourse from "../../../api/useAllCourse";
 import axiosSecure from "../../../api/axiosSecure";
@@ -88,7 +88,6 @@ const CourseManage = () => {
           ))}
         </tbody>
       </table>
-      <ToastContainer />
     </div>
   );
 };

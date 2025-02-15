@@ -6,6 +6,7 @@ const axiosPublic = axios.create({
     process.env.NODE_ENV === "development"
       ? "http://localhost:5000" // Development URL
       : "https://web-innovators-learnup-api.vercel.app", // Production URL
+  withCredentials: true,
 });
 
 export default axiosPublic;

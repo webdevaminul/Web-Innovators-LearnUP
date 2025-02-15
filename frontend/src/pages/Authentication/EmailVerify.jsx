@@ -7,46 +7,41 @@ import axiosPublic from "../../api/axiosPublic";
 import Heading from "../../utils/Heading";
 
 export default function EmailVerify() {
-  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { search } = useLocation();
   const { loading, error } = useSelector((state) => state.authUsers);
 
   useEffect(() => {
-    // Extract token from query parameters
-    const token = new URLSearchParams(location.search).get("token");
+    const token = new URLSearchParams(search).get("token");
 
-    // Return an error if the token is missing
     if (!token) {
       dispatch(loginFailure("Verification token is missing"));
       return;
     }
 
     const verifyEmail = async () => {
-      // Dispatch request start action before making API call
       dispatch(requestStart());
 
       try {
         const { data } = await axiosPublic.get(`/auth/email-verify?token=${token}`);
-        // Dispatch login success action if login is successful
         dispatch(emailLoginSuccess(data));
-
-        // Store the access token in localStorage
         localStorage.setItem("learnupAccessToken", data.token);
-        console.log("Sign up API Response:", data);
 
-        // Navigate to homepage
         setTimeout(() => {
           navigate("/");
         }, 1000);
       } catch (err) {
-        console.error("Email verification error:", err);
-        dispatch(loginFailure(err.response?.data?.message || "Email verification failed"));
+        dispatch(
+          loginFailure(
+            err.response?.data?.message || "Email verification failed. Please try again."
+          )
+        );
       }
     };
 
     verifyEmail();
-  }, [location.search, navigate, dispatch]);
+  }, [search, navigate, dispatch]);
 
   return (
     <main className="min-h-[calc(100vh-3.8rem)] flex flex-col items-center justify-center bg-backgroundPrimary">
